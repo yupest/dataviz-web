@@ -1,0 +1,34 @@
+.data-table-section {
+  margin-top: 24px;
+}
+
+.data-table-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.data-table-header h2 {
+  margin: 0;
+}
+
+.data-table-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  color: #555;
+  font-size: 14px;
+}
+
+.data-table-empty {
+  padding: 16px;
+  border: 1px dashed #bbb;
+  border-radius: 12px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.data-table-root {
+  min-height: 240px;
+}
