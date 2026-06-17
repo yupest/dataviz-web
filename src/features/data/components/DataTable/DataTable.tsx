@@ -1,15 +1,12 @@
 import { useEffect, useRef } from "react";
 import { TabulatorFull as Tabulator } from "tabulator-tables";
 import "tabulator-tables/dist/css/tabulator.min.css";
-import type { Dataset } from "../../types";
 import { buildTabulatorColumns } from "../../services/tabulatorColumns";
+import { useDataset } from "../../hooks/useDataset";
 import "./DataTable.css";
 
-type Props = {
-  dataset: Dataset | null;
-};
-
-export default function DataTable({ dataset }: Props) {
+export default function DataTable() {
+  const { dataset } = useDataset();
   const tableRef = useRef<HTMLDivElement | null>(null);
   const tabulatorRef = useRef<InstanceType<typeof Tabulator> | null>(null);
 

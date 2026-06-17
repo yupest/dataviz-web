@@ -1,27 +1,24 @@
 import { useState } from "react";
-import type { Dataset } from "../../types";
-import "./DataUpload.css";
 import { parseDatasetFile } from "../../services/fileParser";
+import { useDataset } from "../../hooks/useDataset";
+import "./DataUpload.css";
 
-type Props = {
-  onDataLoaded: (dataset: Dataset) => void;
-};
-
-export default function DataUpload({ onDataLoaded }: Props) {
+export default function DataUpload() {
+  const { setDataset } = useDataset();
   const [error, setError] = useState<string>("");
   const [, setFileName] = useState<string>("");
 
   const handleFile = async (file: File) => {
-  setError("");
-  setFileName(file.name);
+    setError("");
+    setFileName(file.name);
 
-  try {
-    const dataset = await parseDatasetFile(file);
-    onDataLoaded(dataset);
-  } catch {
-    setError("Не удалось прочитать или обработать файл.");
-  }
-};
+    try {
+      const dataset = await parseDatasetFile(file);
+      await setDataset(dataset);
+    } catch {
+      setError("Не удалось прочитать или обработать файл.");
+    }
+  };
 
   return (
     <div className="upload-card">
