@@ -1,3 +1,4 @@
+import { isSystemField } from "../domain/row";
 import type { Dataset, DataRow, } from "../types";
 import { normalizeRow } from "./cellNormalizer";
 import { inferColumns, } from "./columnInference";
@@ -25,7 +26,7 @@ export async function parseJsonFile(file: File): Promise<Dataset> {
 
   const rows = normalizeJson(parsed);
 
-  const fields = rows.length > 0 ? Object.keys(rows[0]) : [];
+  const fields = rows.length > 0 ? Object.keys(rows[0]).filter((field) => !isSystemField(field)) : [];
 
   return { name: file.name,
            sourceType: "json",

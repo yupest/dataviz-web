@@ -1,8 +1,12 @@
+import type { ROW_ID_FIELD } from "./domain/row";
+
 export type DataType = "string" | "number" | "boolean" | "date";
 
 export type CellValue = string | number | boolean | null;
 
-export type DataRow = Record<string, CellValue>;
+export type DataRow = {
+  [ROW_ID_FIELD]: string;
+} & Record<string, CellValue>;
 
 export type ColumnMeta = {
   field: string;
@@ -19,5 +23,3 @@ export type Dataset = {
   columns: ColumnMeta[];
   rows: DataRow[];
 };
-
-export type SorterType = "string" | "number" | "boolean" | "date";

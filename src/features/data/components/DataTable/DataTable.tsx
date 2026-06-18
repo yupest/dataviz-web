@@ -1,35 +1,49 @@
 import { useEffect, useRef } from "react";
 import { TabulatorFull as Tabulator } from "tabulator-tables";
+import type { CellComponent } from "tabulator-tables";
 import "tabulator-tables/dist/css/tabulator.min.css";
-import { buildTabulatorColumns } from "../../services/tabulatorColumns";
+
 import { useDataset } from "../../hooks/useDataset";
+import { buildTabulatorColumns } from "../../services/tabulatorColumns";
+import type { CellValue, DataRow } from "../../types";
 import "./DataTable.css";
 
 export default function DataTable() {
-  const { dataset } = useDataset();
-  const tableRef = useRef<HTMLDivElement | null>(null);
+  const { dataset, datasetVersion, updateCell } = useDataset();
+  const tableElementRef = useRef<HTMLDivElement | null>(null);
   const tabulatorRef = useRef<InstanceType<typeof Tabulator> | null>(null);
 
   useEffect(() => {
-    if (!tableRef.current) return;
+    if (!tableElementRef.current) return;
 
     tabulatorRef.current?.destroy();
     tabulatorRef.current = null;
 
     if (!dataset) return;
 
-    tabulatorRef.current = new Tabulator(tableRef.current, {
+    const table = new Tabulator(tableElementRef.current, {
       data: dataset.rows,
       columns: buildTabulatorColumns(dataset),
       layout: "fitColumns",
       placeholder: "Нет данных для отображения",
     });
 
+    table.on("cellEdited", (cell: CellComponent) => {
+      const row = cell.getRow().getData() as DataRow;
+      const rowId = row.__rowId;
+      const field = cell.getField();
+      const value = cell.getValue() as CellValue;
+
+      void updateCell(rowId, field, value);
+    });
+
+    tabulatorRef.current = table;
+
     return () => {
-      tabulatorRef.current?.destroy();
+      table.destroy();
       tabulatorRef.current = null;
     };
-  }, [dataset]);
+  }, [datasetVersion]);
 
   return (
     <section className="data-table-section">
@@ -45,8 +59,7 @@ export default function DataTable() {
       </div>
 
       {!dataset && <div className="data-table-empty">Сначала загрузите CSV или JSON файл.</div>}
-
-      <div ref={tableRef} className="data-table-root" />
+      <div ref={tableElementRef} className="data-table-root" />
     </section>
   );
 }
