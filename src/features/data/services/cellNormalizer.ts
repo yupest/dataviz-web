@@ -1,9 +1,6 @@
+import { createId } from "../../../shared/utils/createId";
 import { ROW_ID_FIELD } from "../domain/row";
 import type { CellValue, DataRow } from "../types";
-
-function createRowId(): string {
-  return globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-}
 
 export function normalizeCell(value: unknown): CellValue {
   if (value === null || value === undefined) return null;
@@ -21,7 +18,7 @@ export function normalizeCell(value: unknown): CellValue {
 }
 
 export function normalizeRow(row: Record<string, unknown>): DataRow {
-  const result = { [ROW_ID_FIELD]: createRowId() } as DataRow;
+  const result = { [ROW_ID_FIELD]: createId() } as DataRow;
 
   for (const [key, value] of Object.entries(row)) {
     result[key] = normalizeCell(value);
