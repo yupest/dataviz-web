@@ -1,4 +1,8 @@
 .upload-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   max-width: 720px;
   margin: 32px auto;
   padding: 24px;
