@@ -1,5 +1,5 @@
 import type { ColumnDefinition } from "tabulator-tables";
-import type { Dataset } from "../types";
+import type { Dataset } from "../domain/types";
 import { TYPE_CONFIG } from "../domain/dataTypes";
 
 function buildHeaderTitle(title: string, type: string): string {

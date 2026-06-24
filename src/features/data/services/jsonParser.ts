@@ -1,5 +1,5 @@
 import { isSystemField } from "../domain/row";
-import type { Dataset, DataRow, } from "../types";
+import type { Dataset, DataRow, } from "../domain/types";
 import { normalizeRow } from "./cellNormalizer";
 import { inferColumns, } from "./columnInference";
 

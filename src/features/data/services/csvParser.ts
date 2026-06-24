@@ -1,5 +1,5 @@
 import Papa from "papaparse";
-import type { Dataset } from "../types";
+import type { Dataset } from "../domain/types";
 import { inferColumns } from "./columnInference";
 import { normalizeRow } from "./cellNormalizer";
 import { isSystemField } from "../domain/row";

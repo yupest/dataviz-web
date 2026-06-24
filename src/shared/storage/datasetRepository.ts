@@ -1,5 +1,5 @@
 import { db, WORKSPACE_ID } from "./db";
-import type { Dataset } from "../../features/data/types";
+import type { Dataset } from "../../features/data/domain/types";
 
 type WorkspaceRecord = {
   id: "workspace";

@@ -1,4 +1,4 @@
-import type { DataType } from "../types";
+import type { DataType } from "../domain/types";
 
 export const TYPE_CONFIG = {
   string: {

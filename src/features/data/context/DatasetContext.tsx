@@ -1,5 +1,5 @@
 import { createContext, useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
-import type { CellValue, Dataset } from "../types";
+import type { CellValue, Dataset } from "../domain/types";
 import { clearDataset, loadDataset, saveDataset } from "../../../shared/storage/datasetRepository";
 
 type DatasetContextValue = {

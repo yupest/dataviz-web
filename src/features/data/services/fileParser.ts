@@ -1,4 +1,4 @@
-import type { Dataset } from "../types";
+import type { Dataset } from "../domain/types";
 import { parseCsvFile } from "./csvParser";
 import { parseJsonFile } from "./jsonParser";
 

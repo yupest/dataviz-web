@@ -1,5 +1,5 @@
 import Dexie, { type Table } from "dexie";
-import type { Dataset } from "../../features/data/types";
+import type { Dataset } from "../../features/data/domain/types";
 
 export type WorkspaceRecord = {
   id: "workspace";

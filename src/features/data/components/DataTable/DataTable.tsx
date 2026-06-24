@@ -5,7 +5,7 @@ import "tabulator-tables/dist/css/tabulator.min.css";
 
 import { useDataset } from "../../hooks/useDataset";
 import { buildTabulatorColumns } from "../../services/tabulatorColumns";
-import type { CellValue, DataRow } from "../../types";
+import type { CellValue, DataRow } from "../../domain/types";
 import "./DataTable.css";
 
 export default function DataTable() {

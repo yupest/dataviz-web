@@ -1,4 +1,4 @@
-import type { ROW_ID_FIELD } from "./domain/row";
+import type { ROW_ID_FIELD } from "./row";
 
 export type DataType = "string" | "number" | "boolean" | "date";
 

@@ -1,4 +1,4 @@
-import type { ColumnMeta, DataRow, DataType, } from "../types";
+import type { ColumnMeta, DataRow, DataType, } from "../domain/types";
 
 function normalizeValue(value: unknown): string {
   return String(value ?? "").trim();

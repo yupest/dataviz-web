@@ -1,6 +1,6 @@
 import { createId } from "../../../shared/utils/createId";
 import { ROW_ID_FIELD } from "../domain/row";
-import type { CellValue, DataRow } from "../types";
+import type { CellValue, DataRow } from "../domain/types";
 
 export function normalizeCell(value: unknown): CellValue {
   if (value === null || value === undefined) return null;
