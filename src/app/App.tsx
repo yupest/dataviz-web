@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DatasetProvider } from "../features/data/context/DatasetContext";
+import { VisualizationProvider } from "../features/visualization/context/VisualizationContext";
+import { useVisualization } from "../features/visualization/hooks/useVisualization";
+import VisualizationWorkspace from "../features/visualization/components/VisualizationWorkspace";
 import MainTabs, { type MainTabKey } from "./components/MainTabs";
 import WorkspacePlaceholder from "./components/WorkspacePlaceholder";
 import "./App.css";
@@ -8,7 +11,12 @@ import DataWorkspace from "../features/data/components/DataWorkspace/DataWorkspa
 
 function AppContent() {
   const [activeTab, setActiveTab] = useState<MainTabKey>("data");
-  const { isReady } = useDataset();
+  const { isReady, datasetVersion } = useDataset();
+  const { resetCharts } = useVisualization();
+
+  useEffect(() => {
+    resetCharts("line");
+  }, [datasetVersion, resetCharts]);
 
   if (!isReady) {
     return (
@@ -26,12 +34,7 @@ function AppContent() {
 
       <main className="app-shell__content">
         {activeTab === "data" && <DataWorkspace />}
-        {activeTab === "visualizations" && (
-          <WorkspacePlaceholder
-            title="Визуализация"
-            description="Здесь появятся вкладки графиков, настройки осей, стилей и предпросмотр."
-          />
-        )}
+        {activeTab === "visualizations" && <VisualizationWorkspace />}
         {activeTab === "dashboard" && (
           <WorkspacePlaceholder
             title="Дашборд"
@@ -46,7 +49,9 @@ function AppContent() {
 export default function App() {
   return (
     <DatasetProvider>
-      <AppContent />
+      <VisualizationProvider>
+        <AppContent />
+      </VisualizationProvider>
     </DatasetProvider>
   );
 }
