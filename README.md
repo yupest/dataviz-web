@@ -1,73 +1,64 @@
-# React + TypeScript + Vite
+# Датавиз — работа с данными
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Ветка `feature/data-only` содержит самостоятельную веб-версию вкладки «Данные» Датавиз-конструктора. React + TypeScript + Vite; обработка файлов в браузере, сохранение рабочего набора в IndexedDB. Графики на листах, дашборд и эссе не подключены к интерфейсу этой ветки; их исходники сохранены для основной версии.
 
-Currently, two official plugins are available:
+## Запуск
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Нужен Node.js **20.19+** или **22.12+** (рекомендуется Node.js 22).
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```sh
+npm ci
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Откройте адрес, напечатанный Vite (обычно `http://localhost:5173/dataviz-web/`).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```sh
+npm test
+npm run build
+npm run preview
 ```
+
+Сборка находится в `dist/`. Сохранён путь GitHub Pages `/dataviz-web/`. Workflow публикует автоматически только `main`, поэтому push этой ветки не заменяет основную опубликованную версию. Excel-парсер SheetJS 0.20.3 закреплён за официальным tarball; ZIP создаётся через fflate.
+
+## Возможности
+
+- Загрузка CSV/TXT с определением разделителя, JSON (объект или массив объектов), Excel XLS/XLSX с выбором листа.
+- Сохранение и загрузка JSON-проекта: исходные данные, фильтры, скрытые поля, роли и настройки модели.
+- Таблица с пагинацией, сортировкой, обозначением типов и пропусков; редактор ячеек, добавление/удаление строк, переименование/удаление столбцов, явные сохранение и отмена.
+- Фильтры И/ИЛИ: содержит, равно/не равно, сравнения, пусто/не пусто; служебный индикатор NA; скрытие полей.
+- Числовая и категориальная описательная статистика с CSV-выгрузкой.
+- Обычная CSV-выгрузка и энкодер: one-hot до 15 категорий, label для остальных.
+- Мастер модели: массовые роли полей, одна цель, выбор категориального/числового типа цели, коды классов, Seed, train/test, стратификация по цели.
+- Диаграмма размеров: stacked bar train/test/целиком для классов; pie для числовой цели. Таблица размерностей X/y и полного train.
+- ZIP: `X_train.csv`, `y_train.csv`, `X_test.csv`, `y_test.csv`, `train.csv`, `model-settings.json`.
+- Импорт `model-settings.json` из настольной или веб-версии: роли, коды цели и общий словарь для повторного разбиения с совместимым набором признаков.
+- Встроенная справка с точным описанием влияния фильтров и скрытия полей.
+
+## Область действия настроек
+
+| Операция | Фильтр строк | Скрытие столбцов |
+|---|---|---|
+| Таблица | Да, весь набор до пагинации | Да |
+| Скачать данные / Энкодер | Да, все страницы | Скрытые исключаются |
+| Статистика | Нет | Нет |
+| Значения и частоты цели | Да | Нет |
+| Разбиение модели и диаграммы | Да | Нет; используются роли |
+| X/y | Да | Только роли: признаки в X, цель в y |
+| Полный train.csv | Да, затем обучающая часть | Все исходные поля включены |
+| Сохранить проект | Сохраняет фильтр и все строки | Сохраняет видимость и все поля |
+
+Словари энкодера строятся по полному источнику до фильтрации. Схема из импортированного `model-settings.json` имеет приоритет для модели. Новая категория, отсутствующая в общем словаре, вызывает явную ошибку. Пропуски в цели блокируют выгрузку; скрытие полей не меняет NA. Балансировка отключена.
+
+## Два этапа разбиения
+
+1. Загрузите исходник, выберите фильтр, роли и цель. Отложите, например, 10% test, скачайте ZIP.
+2. Загрузите полный `train.csv` первого этапа.
+3. В мастере нажмите «Загрузить настройки модели» и выберите `model-settings.json` первого этапа.
+4. Задайте новое разбиение 80/20. Роли и словари остаются совместимыми с отдельно отложенным первым test.
+
+Используется `mulberry32-fisher-yates-v1`. При одинаковых исходных данных, порядке строк, фильтре, Seed и настройках разбиение воспроизводится в веб-версии. Конкретные строки не обязаны совпадать с NumPy-разбиением настольной версии при том же Seed. Стратификация сохраняет классы цели, а не все категории признаков. Для единственного экземпляра класса нельзя обеспечить присутствие в обеих частях без дублирования.
+
+## Проверки
+
+`npm test` проверяет импорт CSV/JSON/Excel, ошибки входных данных, фильтры/NA, кодирование и коллизии названий, воспроизводимость и стратификацию, отсутствие пересечения train/test, соответствие строк X/y, состав ZIP, полный train, числовую цель, повторное разбиение с общим словарём и сохранение проекта. Пользовательские файлы в репозиторий не включены.

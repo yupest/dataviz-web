@@ -1,3 +1,4 @@
+import type { ViewSettings } from "../workbench/types";
 import type { ROW_ID_FIELD } from "./row";
 
 export type DataType = "string" | "number" | "boolean" | "date";
@@ -19,7 +20,8 @@ export type ColumnMeta = {
 
 export type Dataset = {
   name: string;
-  sourceType: "csv" | "json";
+  sourceType: "csv" | "json" | "xlsx" | "xls";
+  view?: ViewSettings;
   columns: ColumnMeta[];
   rows: DataRow[];
 };

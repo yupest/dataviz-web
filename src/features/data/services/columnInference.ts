@@ -1,4 +1,4 @@
-import type { ColumnMeta, DataRow, DataType, } from "../domain/types";
+import type { ColumnMeta, DataRow, DataType } from "../domain/types";
 
 function normalizeValue(value: unknown): string {
   return String(value ?? "").trim();
@@ -9,15 +9,19 @@ function isBooleanLike(value: string): boolean {
 }
 
 function isNumberLike(value: string): boolean {
-  return !Number.isNaN(Number(value.replace(",", ".")));
+  return (
+    Number.isFinite(Number(value.replace(",", "."))) && !/^[+-]?0\d/.test(value)
+  );
 }
 
 function isDateLike(value: string): boolean {
-  return !Number.isNaN(Date.parse(value));
+  return (
+    /^\d{4}-\d{2}-\d{2}(?:T.*)?$/.test(value) &&
+    !Number.isNaN(Date.parse(value))
+  );
 }
 
 function detectType(values: string[]): DataType {
-
   const nonEmpty = values.filter((v) => v !== "");
 
   if (nonEmpty.length > 0 && nonEmpty.every(isBooleanLike)) {
@@ -36,14 +40,15 @@ function detectType(values: string[]): DataType {
 }
 
 export function inferColumnMeta(field: string, rows: DataRow[]): ColumnMeta {
-
   const values = rows.map((row) => normalizeValue(row[field]));
   const nonEmpty = values.filter((v) => v !== "");
   const uniqueValues = Array.from(new Set(nonEmpty));
   const type = detectType(values);
 
   return {
-    field, title: field, type,
+    field,
+    title: field,
+    type,
 
     uniqueCount: uniqueValues.length,
 

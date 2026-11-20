@@ -1,6 +1,17 @@
-import { createContext, useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 import type { CellValue, Dataset } from "../domain/types";
-import { clearDataset, loadDataset, saveDataset } from "../../../shared/storage/datasetRepository";
+import {
+  clearDataset,
+  loadDataset,
+  saveDataset,
+} from "../../../shared/storage/datasetRepository";
 
 type DatasetContextValue = {
   dataset: Dataset | null;
@@ -26,7 +37,12 @@ export function DatasetProvider({ children }: Props) {
     let cancelled = false;
 
     (async () => {
-      const loaded = await loadDataset();
+      let loaded: Dataset | null = null;
+      try {
+        loaded = await loadDataset();
+      } catch {
+        /* Private mode or unavailable IndexedDB: file export remains available. */
+      }
       if (cancelled) return;
       setDatasetState(loaded);
       if (loaded) setDatasetVersion((value) => value + 1);
@@ -51,12 +67,14 @@ export function DatasetProvider({ children }: Props) {
 
       const nextDataset: Dataset = {
         ...prev,
-        rows: prev.rows.map((row) => (row.__rowId === rowId ? { ...row, [field]: value } : row)),
+        rows: prev.rows.map((row) =>
+          row.__rowId === rowId ? { ...row, [field]: value } : row,
+        ),
       };
 
       await setDataset(nextDataset);
     },
-    [dataset, setDataset]
+    [dataset, setDataset],
   );
 
   const clear = useCallback(async () => {
@@ -65,9 +83,14 @@ export function DatasetProvider({ children }: Props) {
     await clearDataset();
   }, []);
 
-  const value = useMemo(() => ({ dataset, isReady, datasetVersion, setDataset, updateCell, clear }), [dataset, isReady, datasetVersion, setDataset, updateCell, clear]);
+  const value = useMemo(
+    () => ({ dataset, isReady, datasetVersion, setDataset, updateCell, clear }),
+    [dataset, isReady, datasetVersion, setDataset, updateCell, clear],
+  );
 
-  return <DatasetContext.Provider value={value}>{children}</DatasetContext.Provider>;
+  return (
+    <DatasetContext.Provider value={value}>{children}</DatasetContext.Provider>
+  );
 }
 
 export { DatasetContext };

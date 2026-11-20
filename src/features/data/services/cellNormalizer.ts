@@ -12,7 +12,7 @@ export function normalizeCell(value: unknown): CellValue {
   if (/^(true|false)$/i.test(text)) return text.toLowerCase() === "true";
 
   const number = Number(text.replace(",", "."));
-  if (!Number.isNaN(number)) return number;
+  if (Number.isFinite(number) && (!Number.isInteger(number) || Number.isSafeInteger(number)) && !/^[+-]?0\d/.test(text)) return number;
 
   return text;
 }
